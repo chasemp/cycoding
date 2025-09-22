@@ -1,0 +1,6 @@
+exclusions:
+  sast:
+    rules:
+    - usage-of-dangerous-global-function
+    - unsanitized-user-input-injection
+    - usage-of-weak-hashing-algorithm

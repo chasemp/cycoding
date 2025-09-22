@@ -1,0 +1,53 @@
+# SAST Policies Configuration for Cycode
+# This file defines the desired state of SAST policies in Cycode
+# Modify the 'enabled' field to control policy states
+# The sync script will reconcile these settings with the remote Cycode platform
+
+policies:
+  - id: "usage-of-dangerous-global-function"
+    name: "Usage of dangerous 'global' function"
+    category: "SAST"
+    subcategory: "Security"
+    severity: "Critical"
+    enabled: true
+    description: "Detects usage of dangerous global functions that could lead to security vulnerabilities"
+
+  - id: "unsanitized-user-input-injection"
+    name: "Unsanitized user input injection"
+    category: "SAST"
+    subcategory: "Security"
+    severity: "Critical"
+    enabled: true
+    description: "Identifies potential injection vulnerabilities from unsanitized user input"
+
+  - id: "leakage-of-sensitive-data"
+    name: "Leakage of sensitive data"
+    category: "SAST"
+    subcategory: "Security"
+    severity: "Medium"
+    enabled: false
+    description: "Detects potential leakage of sensitive information"
+
+  - id: "usage-of-weak-hashing-algorithm"
+    name: "Usage of weak hashing algorithm"
+    category: "SAST"
+    subcategory: "Security"
+    severity: "High"
+    enabled: true
+    description: "Identifies usage of cryptographically weak hashing algorithms"
+
+  - id: "usage-of-single-iteration-pbkdf2"
+    name: "Usage of single iteration PBKDF2"
+    category: "SAST"
+    subcategory: "Security"
+    severity: "Low"
+    enabled: false
+    description: "Detects usage of PBKDF2 with insufficient iterations"
+
+# Configuration metadata
+metadata:
+  version: "1.0"
+  last_updated: "2025-09-22"
+  managed_by: "GitOps"
+  description: "Local SAST policy configuration for Cycode platform synchronization"
+
