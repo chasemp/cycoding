@@ -51,3 +51,4 @@ metadata:
   managed_by: "GitOps"
   description: "Local SAST policy configuration for Cycode platform synchronization"
 
+

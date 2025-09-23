@@ -1,17 +1,44 @@
 # Cycode 3-Tier Testing Strategy - Complete Implementation Summary
 
-## 🎉 **SUCCESS! Vulnerable PRs Created for All 3 Alpha Tier Repositories**
+## 🎉 **SUCCESS! Vulnerable PRs Created with Expected Findings Comments**
 
-This document summarizes the complete implementation of a 3-tier testing strategy for evaluating Cycode's security capabilities. We've successfully generated **9 vulnerable PRs** across the 3 Alpha tier repositories, each containing known SAST, SCA, and Secrets vulnerabilities for comprehensive Cycode testing.
+This document summarizes the complete implementation of a 3-tier testing strategy for evaluating Cycode's security capabilities. We've successfully generated **10 vulnerable PRs** across the Alpha tier repositories, each containing known SAST, SCA, and Secrets vulnerabilities for comprehensive Cycode testing.
+
+### **🔍 Enhanced PR Comment Functionality**
+All PRs now include detailed comments with:
+- **Expected vulnerability findings** with severity levels and locations
+- **Tool-specific detection expectations** (Cycode, ESLint, Semgrep, etc.)
+- **Validation checklists** for security testing
+- **Remediation guidance expectations**
+
+## 🎯 **3-Tier Strategy Overview**
+
+Our testing strategy implements three distinct security tiers with different coverage and enforcement levels:
+
+### **🔴 Tier 1: Full Coverage + Blocking**
+- **Coverage**: SCA + IaC + SAST + Secrets Detection
+- **Enforcement**: Blocking at High/Critical severity
+- **Use Case**: Production-critical repositories requiring comprehensive security validation
+
+### **🟡 Tier 2: Full Coverage + Non-Blocking** 
+- **Coverage**: SCA + IaC + SAST + Secrets Detection
+- **Enforcement**: Non-Blocking (Warnings/Advisory only)
+- **Use Case**: Development repositories needing full visibility without workflow disruption
+
+### **🟢 Tier 3: Secrets Only + Advisory**
+- **Coverage**: Secrets Detection Only
+- **Enforcement**: Advisory (No blocking, minimal footprint)
+- **Use Case**: Experimental repositories requiring basic credential protection only
 
 ## 📋 **Complete PR Summary**
 
-### **🔴 Tier One Alpha (Production Critical)**
+### **🔴 Tier One Alpha (Full Coverage + Blocking)**
 **Repository**: [cycode-testing-tier-one-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-one-alpha)
 
-**Security Level**: Maximum  
-**Risk Tolerance**: Zero tolerance for critical/high vulnerabilities  
-**Expected Behavior**: All policies should block with maximum enforcement
+**Security Level**: SCA + IaC + SAST + Secrets Coverage  
+**Enforcement**: Blocking at High/Critical severity  
+**Risk Tolerance**: Zero tolerance for high/critical vulnerabilities  
+**Expected Behavior**: All security scan types enabled with blocking enforcement for High/Critical findings
 
 #### **Pull Requests Created:**
 
@@ -44,12 +71,13 @@ This document summarizes the complete implementation of a 3-tier testing strateg
      - trufflehog: AWS Credentials (High confidence, Critical severity)
    - **Branch**: `refactor/config-consolidation-786a3ced`
 
-### **🟡 Tier Two Alpha (Staging & Development)**
+### **🟡 Tier Two Alpha (Full Coverage + Non-Blocking)**
 **Repository**: [cycode-testing-tier-two-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-two-alpha)
 
-**Security Level**: Moderate  
-**Risk Tolerance**: Critical vulnerabilities must be addressed, High vulnerabilities require justification  
-**Expected Behavior**: Mixed enforcement - block critical/high, warn on medium/low
+**Security Level**: SCA + IaC + SAST + Secrets Coverage  
+**Enforcement**: Non-Blocking (Warnings/Advisory)  
+**Risk Tolerance**: High - comprehensive visibility without workflow disruption  
+**Expected Behavior**: All security scan types enabled with warning/advisory enforcement only
 
 #### **Pull Requests Created:**
 
@@ -83,12 +111,13 @@ This document summarizes the complete implementation of a 3-tier testing strateg
      - trufflehog: AWS Credentials (High confidence, Critical severity)
    - **Branch**: `feature/analytics-integration-dbb121c8`
 
-### **🟢 Tier Three Alpha (Experimental & Sandbox)**
+### **🟢 Tier Three Alpha (Secrets Coverage Only)**
 **Repository**: [cycode-testing-tier-three-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-three-alpha)
 
-**Security Level**: Basic  
-**Risk Tolerance**: High - focus on learning and awareness  
-**Expected Behavior**: Educational/advisory mode with minimal blocking
+**Security Level**: Secrets Detection Only  
+**Enforcement**: Advisory (No Blocking)  
+**Risk Tolerance**: Maximum - minimal security footprint for experimental work  
+**Expected Behavior**: Only secrets detection enabled with advisory-only enforcement
 
 #### **Pull Requests Created:**
 
@@ -130,21 +159,22 @@ Each repository now has:
 - ✅ **Expected tool findings** documented for validation
 - ✅ **Business context** and realistic development scenarios
 - ✅ **Tier-appropriate security posture** for testing policy enforcement
+- ✅ **NEW**: **PR comments with expected findings** for explicit testing validation
 
 ## 📊 **Repository Overview**
 
 ### **All 6 Tier Repositories Created:**
 
-**Tier 1 - Production Critical (Maximum Security):**
-- ✅ [cycode-testing-tier-one-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-one-alpha) - 71 Python files + 3 vulnerable PRs
-- ✅ [cycode-testing-tier-one-beta](https://github.com/Life360-Sandbox/cycode-testing-tier-one-beta) - 71 Python files
+**Tier 1 - Full Coverage + Blocking at High/Critical:**
+- ✅ [cycode-testing-tier-one-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-one-alpha) - 71 Python files + 3 vulnerable PRs with comments
+- ✅ [cycode-testing-tier-one-beta](https://github.com/Life360-Sandbox/cycode-testing-tier-one-beta) - 71 Python files + 1 vulnerable PR with comment
 
-**Tier 2 - Staging & Development (Moderate Security):**
-- ✅ [cycode-testing-tier-two-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-two-alpha) - 71 Python files + 3 vulnerable PRs
+**Tier 2 - Full Coverage + Non-Blocking (Warnings):**
+- ✅ [cycode-testing-tier-two-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-two-alpha) - 71 Python files + 3 vulnerable PRs with comments
 - ✅ [cycode-testing-tier-two-beta](https://github.com/Life360-Sandbox/cycode-testing-tier-two-beta) - 71 Python files
 
-**Tier 3 - Experimental & Sandbox (Basic Security):**
-- ✅ [cycode-testing-tier-three-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-three-alpha) - 71 Python files + 3 vulnerable PRs
+**Tier 3 - Secrets Coverage Only (Advisory):**
+- ✅ [cycode-testing-tier-three-alpha](https://github.com/Life360-Sandbox/cycode-testing-tier-three-alpha) - 71 Python files + 3 vulnerable PRs with comments
 - ✅ [cycode-testing-tier-three-beta](https://github.com/Life360-Sandbox/cycode-testing-tier-three-beta) - 71 Python files
 
 ### **Code Base Details:**
@@ -174,11 +204,11 @@ All PR details are exported to JSON files for analysis and reporting:
 - Set up branch protection rules as documented in tier READMEs
 
 ### **2. Configure Tier-Specific Policies**
-Based on the tier strategy documented in each repository's README:
+Based on the corrected tier strategy documented in each repository's README:
 
-**Tier 1**: All SAST policies enabled with blocking enforcement  
-**Tier 2**: Core SAST policies enabled with mixed enforcement  
-**Tier 3**: Essential SAST policies in educational/advisory mode  
+**Tier 1**: SCA + IaC + SAST + Secrets coverage with blocking enforcement at High/Critical severity  
+**Tier 2**: SCA + IaC + SAST + Secrets coverage with non-blocking enforcement (warnings/advisory)  
+**Tier 3**: Secrets coverage only with advisory enforcement (no blocking)  
 
 ### **3. Test Policy Enforcement**
 - Monitor how Cycode handles the vulnerable PRs
