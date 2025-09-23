@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document summarizes the current state of our SCA (Software Composition Analysis) vulnerability fetching capabilities across both Cycode and Ox Security platforms.
+This document summarizes the current state of our SCA (Software Composition Analysis) vulnerability fetching capabilities using the Cycode platform.
 
 ## ✅ Working Cycode API Integration
 
@@ -101,64 +101,43 @@ The Cycode API provides **aggregate data** but not **individual vulnerability de
 - ❌ `/v4/scan-results` (404 - Not found)
 - ❌ Multiple scan types in single request (400 - Bad request)
 
-## 🔧 Ox Security Integration
-
-### Status
-- **Authentication**: ✅ Successfully implemented
-- **API Endpoint**: `https://api.cloud.ox.security/api/apollo-gateway`
-- **Method**: Direct API key in Authorization header
-- **Credentials**: Stored in `oxing/secret.yaml` (gitignored)
-
-### Current Findings
-- **GraphQL API working** but test environment has no SCA vulnerabilities
-- **10 issues found** but all are IaC, Secrets, and Git Posture policy violations
-- **No SCA vulnerabilities** in current test environment
-- **Script ready** to fetch SCA findings when they exist
 
 ## 📁 File Structure
 
-### Cycode Integration
 ```
 cycoding/
 ├── fetch_all_violations.py          # Main comprehensive fetcher
-├── secret.yaml                      # Cycode API credentials
+├── fetch_violations.py              # Basic violation fetcher
+├── cycode_policy_sync.py            # SAST policy management tool
+├── secret.yaml                      # Cycode API credentials (gitignored)
 ├── sca_violations_detailed.json     # Latest detailed output
-└── current_status.md               # This document
-```
-
-### Ox Security Integration
-```
-oxing/
-├── fetch_sca_findings_graphql.py    # GraphQL-based SCA fetcher
-├── secret.yaml                      # Ox Security API credentials
-└── issues_scanId-*.csv             # Exported UI data for comparison
+├── current_status.md               # This document
+├── README.md                        # Project documentation
+└── requirements.txt                 # Python dependencies
 ```
 
 ## 🎯 Recommendations
 
-### For Cycode
 1. **Contact Cycode support** to get access to detailed vulnerability endpoints
 2. **Explore private/internal APIs** that might provide package-level details
 3. **Consider webhook integration** for real-time vulnerability notifications
 4. **Investigate CLI tool integration** for more detailed local scanning
-
-### For Ox Security
-1. **Test with repositories that have actual SCA vulnerabilities**
-2. **Explore additional GraphQL queries** for more detailed vulnerability data
-3. **Consider integration with CI/CD pipelines** for automated scanning
+5. **Explore Cycode's enterprise features** for more granular vulnerability data
 
 ## 🔄 Next Steps
 
 1. **Contact Cycode support** for detailed SCA vulnerability endpoints
-2. **Test Ox Security integration** with repositories containing actual SCA vulnerabilities
-3. **Explore hybrid approach** combining both platforms for comprehensive coverage
-4. **Implement real-time monitoring** using available statistical endpoints
+2. **Explore Cycode's enterprise API features** for more granular data access
+3. **Implement real-time monitoring** using available statistical endpoints
+4. **Test with additional repositories** to validate comprehensive coverage
+5. **Develop automated reporting** based on current statistical capabilities
 
 ## 📈 Success Metrics
 
-- ✅ **Authentication**: Working for both platforms
+- ✅ **Authentication**: Working with Cycode API
 - ✅ **API Integration**: Functional with proper error handling
 - ✅ **Data Retrieval**: Statistical summaries available
+- ✅ **Multi-Scope Coverage**: PR and CLI violations tracked separately
 - ⚠️ **Detailed Data**: Limited by API constraints
 - 🔄 **Individual Vulnerabilities**: Requires additional API access
 
