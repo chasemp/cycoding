@@ -1,239 +1,195 @@
-# Cycode SAST Policy Sync Tool
+# Cycode RIG (Risk Information Graph) Integration
 
-A GitOps-style tool for managing SAST policies in Cycode using local YAML configuration files.
+This repository contains comprehensive tools for fetching vulnerability data from Cycode using their modern RIG GraphQL API and legacy report-based queries.
 
-## Overview
+## 🚀 Quick Start
 
-This tool allows you to:
-- Define SAST policy states in a local YAML file
-- Synchronize policy states between your local configuration and the Cycode platform
-- Implement GitOps workflows for policy management
-- Track policy changes through version control
-
-## Prerequisites
-
-- Python 3.7 or higher
-- Cycode account with API access
-- API credentials (Client ID and Client Secret)
-
-## Installation
-
-1. Clone this repository or download the files
-2. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Configuration
-
-### API Credentials
-
-Set your Cycode API credentials as environment variables:
-
+### Prerequisites
 ```bash
-export CYCODE_CLIENT_ID="your-client-id"
-export CYCODE_CLIENT_SECRET="your-client-secret"
-export CYCODE_API_URL="https://api.cycode.com"  # Optional, defaults to this value
+pip install -r requirements.txt
 ```
 
-Alternatively, create a `.env` file in the project directory:
-
-```env
-CYCODE_CLIENT_ID=your-client-id
-CYCODE_CLIENT_SECRET=your-client-secret
-CYCODE_API_URL=https://api.cycode.com
-```
-
-### Policy Configuration
-
-Edit the `sast_policies.yaml` file to define your desired policy states:
-
+### Configuration
+1. Create `secret.yaml` with your Cycode credentials:
 ```yaml
-policies:
-  - id: "usage-of-dangerous-global-function"
-    name: "Usage of dangerous 'global' function"
-    category: "SAST"
-    subcategory: "Security"
-    severity: "Critical"
-    enabled: true
-    description: "Detects usage of dangerous global functions"
-
-  - id: "unsanitized-user-input-injection"
-    name: "Unsanitized user input injection"
-    category: "SAST"
-    subcategory: "Security"
-    severity: "Critical"
-    enabled: false
-    description: "Identifies potential injection vulnerabilities"
+cycode:
+  client_id: "your-client-id"
+  client_secret: "your-client-secret"
 ```
 
-## Usage
-
-### Basic Sync
-
-Synchronize policies between local YAML and Cycode platform:
-
+### Basic Usage
 ```bash
-python cycode_policy_sync.py
+# Get all open violations (default)
+python3 fetch_violations.py
+
+# Get specific violation types (open violations by default)
+python3 fetch_violations.py --type SAST
+python3 fetch_violations.py --type SCA
+python3 fetch_violations.py --type IAC
+python3 fetch_violations.py --type LICENSE
+
+# Get violations by status
+python3 fetch_violations.py --type SAST --status OPEN
+python3 fetch_violations.py --type SAST --status ALL
+python3 fetch_violations.py --type SAST --status DISMISSED
+
+# Using RIG reports for bulk exports
+python3 fetch_violations_rig.py -q rig_queries/sast_violations.json
 ```
 
-### Dry Run
+## 📁 Repository Structure
 
-Preview changes without applying them:
+### Core Tools
+- **`fetch_violations.py`** - Primary tool with type and status filtering
+  - **Types**: ALL, SAST, IAC, SCA, LICENSE  
+  - **Status**: OPEN (default), DISMISSED, RESOLVED, CLOSED, ALL
+- **`fetch_violations_rig.py`** - Secondary tool using RIG report exports
+- **`rig_queries/`** - Pre-built query templates for different violation types
 
+### Supporting Files
+- **`download-cycode-report/`** - Cycode's example RIG implementation
+- **`cycode_policy_sync.py`** - SAST policy management tool
+- **`comprehensive_test/`** - Sample output data
+- **`sast_policies.yaml`** - SAST policy configurations
+
+## 🔧 Tools Comparison
+
+### Direct GraphQL (`fetch_violations.py`)
+**Best for: Real-time security monitoring and detailed analysis**
+
+✅ **Advantages:**
+- Rich vulnerability metadata (EPSS scores, CVE advisories)
+- Real-time data (38ms response time)
+- Exploitability information
+- Full dependency paths
+- Future-proof (Cycode's preferred approach)
+
+📊 **Data Quality:**
+```json
+{
+  "vulnerability_id": "CVE-2024-12798",
+  "package_name": "ch.qos.logback:logback-core",
+  "severity": "Medium",
+  "epss_info": {"epss": 0.00174},
+  "advisory": {
+    "summary": "Expression Language Injection vulnerability",
+    "description": "Full CVE description..."
+  }
+}
+```
+
+### RIG Reports (`fetch_violations_rig.py`)
+**Best for: Bulk exports and compliance reporting**
+
+✅ **Advantages:**
+- Large dataset exports (6,563 SAST violations)
+- CSV format support
+- Historical reporting capabilities
+- Simple flat data structure
+
+📋 **Use Cases:**
+- Monthly compliance reports
+- Historical trend analysis
+- Executive dashboards
+- Audit documentation
+
+## 🎯 Usage Examples
+
+### Type and Status Filtering (Primary Approach)
 ```bash
-python cycode_policy_sync.py --dry-run
+# Get all open violations (default behavior)
+python3 fetch_violations.py --type ALL
+
+# Get SAST violations only (open by default)
+python3 fetch_violations.py --type SAST --output-dir sast_results
+
+# Get SCA vulnerabilities with rich CVE data
+python3 fetch_violations.py --type SCA --max-pages 5
+
+# Get all SAST violations regardless of status
+python3 fetch_violations.py --type SAST --status ALL
+
+# Get dismissed violations for analysis
+python3 fetch_violations.py --type SAST --status DISMISSED
+
+# Get Infrastructure as Code violations
+python3 fetch_violations.py --type IAC
+
+# Get license violations (subset of SCA)
+python3 fetch_violations.py --type LICENSE
 ```
 
-### Custom Configuration File
-
-Use a different YAML configuration file:
-
+### RIG Reports (Secondary Approach)
 ```bash
-python cycode_policy_sync.py --config my_policies.yaml
+# Export SAST violations to JSON
+python3 fetch_violations_rig.py -q rig_queries/sast_violations.json -o sast_report.json
+
+# Export to CSV for spreadsheets
+python3 fetch_violations_rig.py -q rig_queries/all_violations.json -o compliance_report.csv -f CSV
+
+# Get secrets detection data
+python3 fetch_violations_rig.py -q rig_queries/secrets_violations.json -o secrets_report.json
 ```
 
-### Verbose Output
+## 📋 Available RIG Query Templates
 
-Enable detailed logging:
+- **`rig_queries/sast_violations.json`** - SAST (Static Analysis) violations only
+- **`rig_queries/secrets_violations.json`** - Secrets detection violations only
+- **`rig_queries/all_violations.json`** - All violation types (SAST + SCA + Secrets)
 
-```bash
-python cycode_policy_sync.py --verbose
+## 🏆 Recommendations
+
+### Primary Approach: Direct GraphQL
+Use `fetch_violations.py` for:
+- Daily security monitoring
+- Detailed vulnerability analysis
+- Risk assessment with EPSS scoring
+- Real-time security dashboards
+
+### Secondary Approach: RIG Reports
+Use `fetch_violations_rig.py` for:
+- Compliance reporting
+- Historical analysis
+- Bulk data exports
+- CSV format requirements
+
+## 📊 Sample Results
+
+### Comprehensive Analysis Output
+```
+🔢 Total Unique Vulnerabilities: 201
+🎯 Total Detection Instances: 201
+
+⚠️ By Severity:
+   Critical: 19
+   High: 101
+   Medium: 69
+   Low: 12
+
+📦 By Ecosystem:
+   Maven: 113
+   NPM: 35
+   PyPI: 45
+   Composer: 8
+
+🎯 Exploitability Analysis:
+   High Risk (>0.1 EPSS): 48
+   Medium Risk (0.01-0.1): 25
+   Low Risk (<0.01): 128
 ```
 
-## GitOps Workflow
+## 🔐 Security Notes
 
-### 1. Version Control Setup
+- Keep `secret.yaml` secure and never commit to version control
+- Credentials are automatically loaded from environment or config file
+- All API calls use proper authentication headers
 
-Store your configuration in Git:
+## 🤝 Support
 
-```bash
-git init
-git add sast_policies.yaml cycode_policy_sync.py requirements.txt
-git commit -m "Initial policy configuration"
-```
-
-### 2. CI/CD Integration
-
-Example GitHub Actions workflow (`.github/workflows/sync-policies.yml`):
-
-```yaml
-name: Sync Cycode SAST Policies
-
-on:
-  push:
-    branches: [ main ]
-    paths: [ 'sast_policies.yaml' ]
-
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-    
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    
-    - name: Sync policies
-      env:
-        CYCODE_CLIENT_ID: ${{ secrets.CYCODE_CLIENT_ID }}
-        CYCODE_CLIENT_SECRET: ${{ secrets.CYCODE_CLIENT_SECRET }}
-      run: |
-        python cycode_policy_sync.py
-```
-
-### 3. Making Policy Changes
-
-1. Edit `sast_policies.yaml` to change policy states
-2. Commit and push changes:
-   ```bash
-   git add sast_policies.yaml
-   git commit -m "Disable XSS detection policy"
-   git push origin main
-   ```
-3. The CI/CD pipeline will automatically sync the changes to Cycode
-
-## API Documentation
-
-This tool is built using the Cycode API documented at [https://docs.cycode.com/apidocs](https://docs.cycode.com/apidocs).
-
-### Key Endpoints Used
-
-- **Authentication**: `POST /auth/token` - Obtain access token
-- **List Policies**: `GET /v1/policies/sast` - Retrieve current SAST policies
-- **Update Policy**: `PATCH /v1/policies/sast/{policy_id}` - Update policy state
-
-> **Note**: The exact API endpoints may vary. Refer to the official Cycode API documentation for the most current endpoint specifications.
-
-## Logging
-
-The tool generates logs in two places:
-- Console output (stdout)
-- Log file: `cycode_sync.log`
-
-Log levels:
-- `INFO`: General operation information
-- `WARNING`: Non-critical issues (e.g., policy not found)
-- `ERROR`: Critical errors that prevent operation
-
-## Error Handling
-
-The tool includes comprehensive error handling for:
-- Authentication failures
-- Network connectivity issues
-- API rate limiting
-- Invalid YAML configuration
-- Missing policies
-
-## Security Considerations
-
-- Store API credentials securely (environment variables or secret management)
-- Use HTTPS for all API communications
-- Rotate API credentials regularly
-- Limit API permissions to minimum required scope
-
-## Troubleshooting
-
-### Authentication Issues
-- Verify your Client ID and Client Secret are correct
-- Check that your Cycode account has API access enabled
-- Ensure environment variables are properly set
-
-### Policy Not Found Warnings
-- Verify policy IDs in your YAML match those in Cycode
-- Check that policies exist in your Cycode organization
-- Review the Cycode web interface to confirm policy names and IDs
-
-### Network Issues
-- Check internet connectivity
-- Verify Cycode API endpoint is accessible
-- Consider proxy settings if behind corporate firewall
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This tool is provided as-is for educational and operational purposes. Ensure compliance with your organization's security policies when using API credentials.
-
-## Support
-
-For issues related to:
-- **This tool**: Create an issue in this repository
-- **Cycode API**: Contact Cycode support
-- **Policy configuration**: Refer to Cycode documentation
+Both approaches are fully functional and complementary. Choose based on your specific use case:
+- **Real-time analysis** → Direct GraphQL
+- **Bulk reporting** → RIG Reports
 
 ---
 
-**Important**: This is a foundational implementation. Always test in a non-production environment first and verify API endpoints match the current Cycode API documentation at [https://docs.cycode.com/apidocs](https://docs.cycode.com/apidocs).
+*This implementation successfully integrates with Cycode's RIG (Risk Information Graph) system using both modern GraphQL endpoints and legacy report-based queries.*

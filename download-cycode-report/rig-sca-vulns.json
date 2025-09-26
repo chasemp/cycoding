@@ -1,0 +1,112 @@
+{
+    "query": {
+        "connections": [],
+        "exists": true,
+        "is_optional": false,
+        "resource_type": "detection",
+        "edge_type": "",
+        "filters": [
+            {
+                "mode": "And",
+                "filters": [
+                    {
+                        "name": "category",
+                        "operator": "Eq",
+                        "value": "SCA",
+                        "type": "String"
+                    },
+                    {
+                        "name": "status",
+                        "operator": "Eq",
+                        "value": "Open",
+                        "type": "List"
+                    }
+                ]
+            }
+        ],
+        "variables": [],
+        "edge_filters": [],
+        "edge_columns": [],
+        "parent_resource_type": "",
+        "sort_by": "_key",
+        "sort_order": "Asc",
+        "limit": -1,
+        "optional_connections_minimum_count": 0
+    },
+    "output_fields": {
+        "columns": [
+            {
+                "value": "source_policy_name",
+                "type": "String",
+                "label": "Source Policy Name"
+            },
+            {
+                "value": "severity",
+                "type": "List",
+                "label": "Severity"
+            },
+            {
+                "value": "status",
+                "type": "List",
+                "label": "Status"
+            },
+            {
+                "value": "category",
+                "type": "String",
+                "label": "Category"
+            },
+            {
+                "value": "created_date",
+                "type": "DateTime",
+                "label": "Detected At"
+            },
+            {
+                "value": "risk_score",
+                "type": "Number",
+                "label": "Risk Score"
+            },
+            {
+                "value": "detection_details.organization_name",
+                "type": "String",
+                "label": "Organization name"
+            },
+            {
+                "value": "detection_details.repository_name",
+                "type": "String",
+                "label": "Repository name"
+            },
+            {
+                "value": "detection_details.repository_url",
+                "type": "String",
+                "label": "Repository URL"
+            },
+            {
+                "value": "detection_details.cvss_score",
+                "type": "String",
+                "label": "Cvss score"
+            },
+            {
+                "value": "detection_details.is_dev_dependency",
+                "type": "Boolean",
+                "label": "Is Dev Dependency"
+            },
+            {
+                "value": "detection_details.is_direct_dependency",
+                "type": "Boolean",
+                "label": "Is Direct Dependency"
+            },
+            {
+                "value": "detection_details.package_version",
+                "type": "String",
+                "label": "Package version"
+            },
+            {
+                "value": "detection_details.package_name",
+                "type": "String",
+                "label": "Package name"
+            }
+        ],
+        "edge_columns": [],
+        "connections": []
+    }
+}
